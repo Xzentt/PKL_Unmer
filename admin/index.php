@@ -1,35 +1,35 @@
 <?php
-    require_once("database.php"); // koneksi DB
-    require_once("auth.php"); // Session
-    logged_admin ();
-    global $total_laporan_masuk, $total_laporan_menunggu, $total_laporan_ditanggapi;
-    if ($id_admin > 0) {
-        foreach($db->query("SELECT COUNT(*) FROM laporan WHERE laporan.tujuan = $id_admin") as $row) {
-            $total_laporan_masuk = $row['COUNT(*)'];
-        }
-
-        foreach($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Ditanggapi\" AND laporan.tujuan = $id_admin") as $row) {
-            $total_laporan_ditanggapi = $row['COUNT(*)'];
-        }
-
-        foreach($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Menunggu\" AND laporan.tujuan = $id_admin") as $row) {
-            $total_laporan_menunggu = $row['COUNT(*)'];
-        }
-    } else {
-        foreach($db->query("SELECT COUNT(*) FROM laporan") as $row) {
-            $total_laporan_masuk = $row['COUNT(*)'];
-        }
-
-        foreach($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Ditanggapi\"") as $row) {
-            $total_laporan_ditanggapi = $row['COUNT(*)'];
-        }
-
-        foreach($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Menunggu\"") as $row) {
-            $total_laporan_menunggu = $row['COUNT(*)'];
-        }
+require_once("database.php"); // koneksi DB
+require_once("auth.php"); // Session
+logged_admin();
+global $total_laporan_masuk, $total_laporan_menunggu, $total_laporan_ditanggapi;
+if ($id_admin > 0) {
+    foreach ($db->query("SELECT COUNT(*) FROM laporan WHERE laporan.tujuan = $id_admin") as $row) {
+        $total_laporan_masuk = $row['COUNT(*)'];
     }
 
- ?>
+    foreach ($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Ditanggapi\" AND laporan.tujuan = $id_admin") as $row) {
+        $total_laporan_ditanggapi = $row['COUNT(*)'];
+    }
+
+    foreach ($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Menunggu\" AND laporan.tujuan = $id_admin") as $row) {
+        $total_laporan_menunggu = $row['COUNT(*)'];
+    }
+} else {
+    foreach ($db->query("SELECT COUNT(*) FROM laporan") as $row) {
+        $total_laporan_masuk = $row['COUNT(*)'];
+    }
+
+    foreach ($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Ditanggapi\"") as $row) {
+        $total_laporan_ditanggapi = $row['COUNT(*)'];
+    }
+
+    foreach ($db->query("SELECT COUNT(*) FROM laporan WHERE status = \"Menunggu\"") as $row) {
+        $total_laporan_menunggu = $row['COUNT(*)'];
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -230,38 +230,38 @@
                             <tbody>
                                 <?php
                                 $no = 1;
-                            // Ambil semua record dari tabel laporan
-                            if ($id_admin > 0) {
-                                $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi AND laporan.tujuan = $id_admin ORDER BY laporan.id DESC");
-                            } else {
-                                $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi ORDER BY laporan.id DESC");
-                            }
-
-                            foreach ($statement as $key ) {
-                                $mysqldate = $key['tanggal'];
-                                $phpdate = strtotime($mysqldate);
-                                $tanggal = date( 'd/m/Y', $phpdate);
-                                $status  = $key['status'];
-                                if($status == "Ditanggapi") {
-                                    $style_status = "<p style=\"background-color:#009688;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Ditanggapi</p>";
+                                // Ambil semua record dari tabel laporan
+                                if ($id_admin > 0) {
+                                    $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi AND laporan.tujuan = $id_admin ORDER BY laporan.id DESC");
                                 } else {
-                                    $style_status = "<p style=\"background-color:#FF9800;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Menunggu</p>";
+                                    $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi ORDER BY laporan.id DESC");
+                                }
+
+                                foreach ($statement as $key) {
+                                    $mysqldate = $key['tanggal'];
+                                    $phpdate = strtotime($mysqldate);
+                                    $tanggal = date('d/m/Y', $phpdate);
+                                    $status  = $key['status'];
+                                    if ($status == "Ditanggapi") {
+                                        $style_status = "<p style=\"background-color:#009688;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Ditanggapi</p>";
+                                    } else {
+                                        $style_status = "<p style=\"background-color:#FF9800;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Menunggu</p>";
+                                    }
+                                ?>
+                                    <tr>
+                                        <td><?php echo $key['id']; ?></td>
+                                        <td><?php echo $key['nama']; ?></td>
+                                        <td><?php echo $key['email']; ?></td>
+                                        <td><?php echo $key['telpon']; ?></td>
+                                        <td><?php echo $key['alamat']; ?></td>
+                                        <td><?php echo $key['nama_divisi']; ?></td>
+                                        <td><?php echo $key['isi']; ?></td>
+                                        <td><?php echo $tanggal; ?></td>
+                                        <td><?php echo $style_status; ?></td>
+                                    </tr>
+                                <?php
                                 }
                                 ?>
-                                <tr>
-                                    <td><?php echo $no++ ?></td>
-                                    <td><?php echo $key['nama']; ?></td>
-                                    <td><?php echo $key['email']; ?></td>
-                                    <td><?php echo $key['telpon']; ?></td>
-                                    <td><?php echo $key['alamat']; ?></td>
-                                    <td><?php echo $key['nama_divisi']; ?></td>
-                                    <td><?php echo $key['isi']; ?></td>
-                                    <td><?php echo $tanggal; ?></td>
-                                    <td><?php echo $style_status; ?></td>
-                                </tr>
-                                <?php
-                            }
-                            ?>
                             </tbody>
                         </table>
                     </div>

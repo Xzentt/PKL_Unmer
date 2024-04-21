@@ -1,18 +1,18 @@
 <?php
 ?>
 <?php
-    require_once("../private/database.php");
-    $statement = $db->query("SELECT id FROM `laporan` ORDER BY id DESC LIMIT 1");
-    // $cekk = $statement->fetch(PDO::FETCH_ASSOC);
-    if ($statement->rowCount()>0) {
-        foreach ($statement as $key ) {
-            // get max id from tabel laporan
-            $max_id = $key['id']+1;
-        }
+require_once("../private/database.php");
+$statement = $db->query("SELECT id FROM `laporan` ORDER BY id DESC LIMIT 1");
+// $cekk = $statement->fetch(PDO::FETCH_ASSOC);
+if ($statement->rowCount() > 0) {
+    foreach ($statement as $key) {
+        // get max id from tabel laporan
+        $max_id = $key['id'] + 1;
     }
-    if ($statement->rowCount()<1) {
-        $max_id = 100;
-    }
+}
+if ($statement->rowCount() < 1) {
+    $max_id = 100;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -50,7 +50,7 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right" style="margin-right: 40px;">
+                    <ul class="nav navbar-nav navbar-right" style="margin-right: 40px;">
                         <li><a href="home">HOME</a></li>
                         <li class="active"><a href="lapor">LAPOR</a></li>
                         <li><a href="lihat">LIHAT PENGADUAN</a></li>
@@ -75,12 +75,11 @@
 
         <!-- content -->
         <div class="main-content">
-
             <h3>Buat Laporan</h3>
-            <hr/>
+            <hr />
             <div class="row">
                 <div class="col-md-8 card-shadow-2 form-custom">
-                    <form class="form-horizontal" role="form" method="post" action="../private/validasi">
+                    <form class="form-horizontal" role="form" method="post" action="../private/validasi" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="nomor" class="col-sm-3 control-label">Nomor Pengaduan</label>
                             <div class="col-sm-9">
@@ -144,13 +143,16 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Add image upload field -->
                         <div class="form-group">
-                            <label for="foto" class="col-sm-3 control-label">Foto</label>
+                            <label for="gambar" class="col-sm-3 control-label">Upload Gambar</label>
                             <div class="col-sm-9">
-                                 <input type="file" class="form-control-file" id="foto" name="foto">
+                                <input type="file" name="gambar" id="gambar" accept="image/*">
                                 <p class="help-block">Unggah foto terkait pengaduan (opsional)</p>
+                                <p class="error"><?= @$_GET['gambarError'] ?></p>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="pengaduan" class="col-sm-3 control-label">Isi Pengaduan</label>
                             <div class="col-sm-9">
@@ -175,98 +177,101 @@
                 </div>
                 <div class="col-md-4"></div>
             </div>
-
             <!-- link to top -->
             <a id="top" href="#" onclick="topFunction()">
                 <i class="fa fa-arrow-circle-up"></i>
             </a>
             <script>
-            // When the user scrolls down 100px from the top of the document, show the button
-            window.onscroll = function() {scrollFunction()};
-            function scrollFunction() {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                    document.getElementById("top").style.display = "block";
-                } else {
-                    document.getElementById("top").style.display = "none";
+                // When the user scrolls down 100px from the top of the document, show the button
+                window.onscroll = function() {
+                    scrollFunction()
+                };
+
+                function scrollFunction() {
+                    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                        document.getElementById("top").style.display = "block";
+                    } else {
+                        document.getElementById("top").style.display = "none";
+                    }
                 }
-            }
-            // When the user clicks on the button, scroll to the top of the document
-            function topFunction() {
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-            }
+                // When the user clicks on the button, scroll to the top of the document
+                function topFunction() {
+                    document.body.scrollTop = 0;
+                    document.documentElement.scrollTop = 0;
+                }
             </script>
             <!-- link to top -->
-
-
-            <!-- /.section -->
-            <hr>
         </div>
+
+
+
+
 
         <!-- Footer -->
         <footer class="footer text-center">
-        <div class="row">
-            <div class="col-md-4 mb-5 mb-lg-0">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <i class="fa fa-top fa-map-marker"></i>
-                    </li>
-                    <li class="list-inline-item">
-                        <h4 class="text-uppercase mb-4">Kantor</h4>
-                    </li>
-                </ul>
-                <p class="mb-0">
-                PG Krebet Baru, Jl. Raya Krebet
-                    <br>No. 10 Malang 65171
-                </p>
+            <div class="row">
+                <div class="col-md-4 mb-5 mb-lg-0">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <i class="fa fa-top fa-map-marker"></i>
+                        </li>
+                        <li class="list-inline-item">
+                            <h4 class="text-uppercase mb-4">Kantor</h4>
+                        </li>
+                    </ul>
+                    <p class="mb-0">
+                        PG Krebet Baru, Jl. Raya Krebet
+                        <br>No. 10 Malang 65171
+                    </p>
+                </div>
+                <div class="col-md-4 mb-5 mb-lg-0">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <i class="fa fa-top fa-rss"></i>
+                        </li>
+                        <li class="list-inline-item">
+                            <h4 class="text-uppercase mb-4">Sosial Media</h4>
+                        </li>
+                    </ul>
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://www.facebook.com/pgkrebetbaru">
+                                <i class="fa fa-fw fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://x.com/PgKrebetbaru?t=705wsLepSnoFtyBDVPIqhQ&s=09">
+                                <i class="fa fa-fw fa-twitter"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <i class="fa fa-top fa-envelope-o"></i>
+                        </li>
+                        <li class="list-inline-item">
+                            <h4 class="text-uppercase mb-4">Kontak</h4>
+                        </li>
+                    </ul>
+                    <p class="mb-0">
+                        0341 - 833176, 833185 <br>
+                        pgkrebet@yahoo.com <br>
+                    </p>
+                </div>
             </div>
-            <div class="col-md-4 mb-5 mb-lg-0">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <i class="fa fa-top fa-rss"></i>
-                    </li>
-                    <li class="list-inline-item">
-                        <h4 class="text-uppercase mb-4">Sosial Media</h4>
-                    </li>
-                </ul>
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://www.facebook.com/pgkrebetbaru">
-                            <i class="fa fa-fw fa-facebook"></i>
-                        </a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="https://x.com/PgKrebetbaru?t=705wsLepSnoFtyBDVPIqhQ&s=09">
-                            <i class="fa fa-fw fa-twitter"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <i class="fa fa-top fa-envelope-o"></i>
-                    </li>
-                    <li class="list-inline-item">
-                        <h4 class="text-uppercase mb-4">Kontak</h4>
-                    </li>
-                </ul>
-                <p class="mb-0">
-                    0341 - 833176, 833185 <br>
-                    pgkrebet@yahoo.com <br>
-                </p>
-            </div>
-        </div>
-    </footer>
-    <!-- /footer -->
+        </footer>
+        <!-- /footer -->
 
-    <div class="copyright py-4 text-center text-white">
-        <!-- <div class="container"> -->
-        <small>PKL UNMER | 2024 &copy; PG Krebet Baru</small>
-        <!-- </div> -->
-    </div>
+        <div class="copyright py-4 text-center text-white">
+            <!-- <div class="container"> -->
+            <small>PKL UNMER | 2024 &copy; PG Krebet Baru</small>
+            <!-- </div> -->
+        </div>
         <!-- shadow -->
     </div>
+
 
     <!-- jQuery -->
     <script src="js/jquery.min.js"></script>

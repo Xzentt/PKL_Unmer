@@ -1,7 +1,7 @@
 <?php
 require_once("database.php");
 require_once("auth.php"); // Session
-logged_admin ();
+logged_admin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,38 +37,37 @@ logged_admin ();
     <script src="vendor/datatables/extra/pdfmake.min.js"></script>
     <script src="vendor/datatables/extra/vfs_fonts.js"></script>
     <script src="vendor/datatables/extra/buttons.html5.min.js"></script>
-    <script type="text/javascript"  class="init">
-    $(document).ready(function() {
-        $('#example').DataTable( {
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'print',
-                    title: 'Data Pengaduan',
-                    customize: function ( win ) {
-                        $(win.document.body).find( 'table' )
-                        .addClass( 'compact' )
-                        .css( 'font-size', 'inherit' );
-                        $(win.document.body)
-                        .css( 'font-size', '10pt' )
-                        .prepend(
-                            '<img src="images/OIP.jpeg" style="display:block;margin-left: auto; margin-top: auto; margin-right: auto; width: 300px;" />'
-                        );
+    <script type="text/javascript" class="init">
+        $(document).ready(function() {
+            $('#example').DataTable({
+                dom: 'Bfrtip',
+                buttons: [{
+                        extend: 'print',
+                        title: 'Data Pengaduan',
+                        customize: function(win) {
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                            $(win.document.body)
+                                .css('font-size', '10pt')
+                                .prepend(
+                                    '<img src="images/OIP.jpeg" style="display:block;margin-left: auto; margin-top: auto; margin-right: auto; width: 300px;" />'
+                                );
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        title: 'Data Pengaduan PG Krebet Baru'
+                    },
+                    {
+                        extend: 'excel',
+                        title: 'Data Pengaduan PG Krebet Baru'
                     }
-                },
-                {
-                    extend: 'pdf',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    title: 'Data Pengaduan PG Krebet Baru'
-                },
-                {
-                    extend: 'excel',
-                    title: 'Data Pengaduan PG Krebet Baru'
-                }
-            ]
-        } );
-    } );
+                ]
+            });
+        });
     </script>
 
 </head>
@@ -184,18 +183,21 @@ logged_admin ();
                         <table class="table table-striped table-bordered" id="example" width="100%">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Nama</th>
                                     <th>Email</th>
                                     <th>Telpon</th>
                                     <th>Alamat</th>
                                     <th>Tujuan</th>
                                     <th>Isi Laporan</th>
+                                    <th>Gambar</th>
                                     <th>Tanggal</th>
                                     <th class="sorting_asc_disabled sorting_desc_disabled">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
+                                $no = 1;
                                 // Ambil semua record dari tabel laporan
                                 if ($id_admin > 0) {
                                     $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi AND laporan.tujuan = $id_admin ORDER BY laporan.id DESC");
@@ -203,28 +205,30 @@ logged_admin ();
                                     $statement = $db->query("SELECT * FROM laporan, divisi WHERE laporan.tujuan = divisi.id_divisi ORDER BY laporan.id DESC");
                                 }
 
-                                foreach ($statement as $key ) {
+                                foreach ($statement as $key) {
                                     $mysqldate = $key['tanggal'];
                                     $phpdate = strtotime($mysqldate);
-                                    $tanggal = date( 'd/m/Y', $phpdate);
+                                    $tanggal = date('d/m/Y', $phpdate);
                                     $status  = $key['status'];
-                                    if($status == "Ditanggapi") {
+                                    if ($status == "Ditanggapi") {
                                         $style_status = "<p style=\"background-color:#009688;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Ditanggapi</p>";
                                     } else {
                                         $style_status = "<p style=\"background-color:#FF9800;color:#fff;padding-left:2px;padding-right:2px;padding-bottom:2px;margin-top:16px;font-size:15px;font-style:italic;\">Menunggu</p>";
                                     }
-                                    ?>
+                                ?>
                                     <tr>
+                                        <td><?php echo $key['id']; ?></td>
                                         <td><?php echo $key['nama']; ?></td>
                                         <td><?php echo $key['email']; ?></td>
                                         <td><?php echo $key['telpon']; ?></td>
                                         <td><?php echo $key['alamat']; ?></td>
                                         <td><?php echo $key['nama_divisi']; ?></td>
                                         <td><?php echo $key['isi']; ?></td>
+                                        <td><img src="<?php echo $key['gambar_path']; ?>" width="100" height="100"></td>
                                         <td><?php echo $tanggal; ?></td>
                                         <td><?php echo $style_status; ?></td>
                                     </tr>
-                                    <?php
+                                <?php
                                 }
                                 ?>
                             </tbody>
